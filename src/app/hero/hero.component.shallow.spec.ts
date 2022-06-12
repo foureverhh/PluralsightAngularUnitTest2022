@@ -23,4 +23,12 @@ describe('Hero component(shallow tests)', ()=>{
         fixture.detectChanges();
         expect(fixture.componentInstance.hero.name).toEqual('name1');
     });
+
+    //test template html
+    it('should render the hero name in an anchor tag', () => {
+        fixture.componentInstance.hero = { id: 1, name: 'name', strength: 1 };
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('a').textContent).toContain('name');
+        expect(fixture.nativeElement.querySelector('a').textContent).toContain('1');
+    });
 });
