@@ -31,6 +31,14 @@ describe('heroes component', ()=>{
         expect(heroesComponent.heroes[0]).toEqual({id: 1, name:'name1', strength:1});
         expect(heroesComponent.heroes[1]).toEqual({id: 3, name:'name3', strength:3});
     });
+
+    it('should call deleteHero by HERORES[1]', () => {
+        mockHeroSevice.deleteHero.and.returnValue(of(true));
+        heroesComponent.heroes = HERORES;
+        heroesComponent.delete(HERORES[1]);
+        expect(mockHeroSevice.deleteHero).toHaveBeenCalled();
+        expect(mockHeroSevice.deleteHero).toHaveBeenCalledWith(HERORES[1]);
+    })
   });
 
   describe('add', ()=> {
