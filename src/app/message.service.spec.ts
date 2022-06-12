@@ -1,16 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-
 import { MessageService } from './message.service';
-
-describe('MessageService', () => {
+describe('Message service', () => {
   let service: MessageService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(MessageService);
+    service = new MessageService();
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+  it('message should no message to start', () => {
+    expect(service.messages.length).toEqual(0);
+  })
 });

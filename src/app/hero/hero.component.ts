@@ -7,11 +7,11 @@ import { Hero } from '../hero';
   styleUrls:  ['./hero.component.css']
 })
 export class HeroComponent {
-  @Input() hero: Hero;
+  @Input() hero!: Hero;
   @Output() delete = new EventEmitter();
 
-  onDeleteClick($event): void {
-    $event.stopPropagation();
-    this.delete.next();
+  onDeleteClick($event: any): void {
+    $event.stopPropaga
+    this.delete.next($event);
   }
 }
