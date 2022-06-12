@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeroesComponent } from './heroes.component';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, Input, NO_ERRORS_SCHEMA } from '@angular/core';
 import { HeroService } from '../hero.service';
 import { Hero } from '../hero';
 import { of } from 'rxjs';
+import { By } from '@angular/platform-browser';
 // shallow test with child component and service dependency
 describe('heroes component (shallow test demo with child component and service dependency)', ()=> {
   let fixture: ComponentFixture<HeroesComponent>;
@@ -13,12 +14,14 @@ describe('heroes component (shallow test demo with child component and service d
   let mockHeroService: any;
 
   //fake a HeroComponent as <app-hero></app-hero>
+  
   @Component({
   selector: 'app-hero',
-  template: '<div></div>',
+  template: '<div>fakeHeroComponent</div>',
   })
   class FakeHeroComponent {
-    @Input() hero!: Hero;
+    @Input()
+    hero!: Hero;
   }
 
 
@@ -34,7 +37,7 @@ describe('heroes component (shallow test demo with child component and service d
         HeroesComponent,
         FakeHeroComponent 
       ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      // schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         { provide: HeroService, useValue: mockHeroService }
       ]
@@ -48,4 +51,12 @@ describe('heroes component (shallow test demo with child component and service d
     // fixture.componentInstance.heroes = HEROES;
     expect(fixture.componentInstance.heroes.length).toEqual(HEROES.length);
   });
+
+  //check template *ngIf let hero of heroes has three li element according to HERORES has three elements
+  it('should create one li for each hero', ()=> { 
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('li')).length).toBe(3);
+  });
+  
 });
