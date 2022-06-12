@@ -3,6 +3,7 @@
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { HeroComponent } from './hero.component';
+import { By } from '@angular/platform-browser';
 
 // Testbed is for to test both component and template together
 describe('Hero component(shallow tests)', ()=>{
@@ -24,11 +25,19 @@ describe('Hero component(shallow tests)', ()=>{
         expect(fixture.componentInstance.hero.name).toEqual('name1');
     });
 
-    //test template html
+    //test template html with fixture.nativeElement.querySelector()
     it('should render the hero name in an anchor tag', () => {
         fixture.componentInstance.hero = { id: 1, name: 'name', strength: 1 };
         fixture.detectChanges();
         expect(fixture.nativeElement.querySelector('a').textContent).toContain('name');
         expect(fixture.nativeElement.querySelector('a').textContent).toContain('1');
     });
+
+    // test template html with debugElement fixture.debugElement.query(By.css('.badge'))
+    // By.css() or By.directive()  ('a') ('.class') ('#id')
+    it('should render the hero id in an anchor tag', () => {
+    fixture.componentInstance.hero = { id: 1, name: 'name', strength: 1 };
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.css('.badge')).nativeElement.textContent).toContain('1');
+});
 });
