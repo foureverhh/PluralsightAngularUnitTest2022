@@ -11,7 +11,7 @@ export class HeroComponent {
   @Output() delete = new EventEmitter();
 
   onDeleteClick($event: any): void {
-    $event.stopPropaga
+    $event.stopPropagate
     this.delete.next($event);
   }
 }

@@ -25,7 +25,7 @@ describe('heroes component', ()=>{
     it('should remove the indicated hero from the heroes list', () => {
         mockHeroSevice.deleteHero.and.returnValue(of(true));
         heroesComponent.heroes = HERORES;
-        heroesComponent.delete(HERORES[1]);
+        heroesComponent.deleteHero(HERORES[1]);
         expect(heroesComponent.heroes.length).toEqual(2);
         // expect(heroesComponent.heroes).toEqual([]);
         expect(heroesComponent.heroes[0]).toEqual({id: 1, name:'name1', strength:1});
@@ -35,7 +35,7 @@ describe('heroes component', ()=>{
     it('should call deleteHero by HERORES[1]', () => {
         mockHeroSevice.deleteHero.and.returnValue(of(true));
         heroesComponent.heroes = HERORES;
-        heroesComponent.delete(HERORES[1]);
+        heroesComponent.deleteHero(HERORES[1]);
         expect(mockHeroSevice.deleteHero).toHaveBeenCalled();
         expect(mockHeroSevice.deleteHero).toHaveBeenCalledWith(HERORES[1]);
     })
