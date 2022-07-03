@@ -57,7 +57,9 @@ describe('deep test with real child component', ()=>{
         const heroComponents = fixture.debugElement.queryAll(By.directive(HeroComponent));
         // find the button on the first HeroComponent instance, and the click event
         heroComponents[0].query(By.css("button")).triggerEventHandler('click', {stopPropagation: () => {}});
-        (<HeroComponent> heroComponents[0].componentInstance).delete.emit(undefined); // Comvert heroComponents[0].componentInstance to HeroComponent
+        // (<HeroComponent> heroComponents[0].componentInstance).delete.emit(HEROES[0]); // Comvert heroComponents[0].componentInstance to HeroComponent
+        // (<HeroComponent> heroComponents[0].componentInstance).delete.emit(undefined);
+        heroComponents[0].triggerEventHandler('delete', null); // same trggering delete event on HeroCompont, but this is from parent debugElement
         expect(fixture.componentInstance.deleteHero).toHaveBeenCalledWith(HEROES[0]); //HEROES[0] is as parameter when delete is called
     })
 })
