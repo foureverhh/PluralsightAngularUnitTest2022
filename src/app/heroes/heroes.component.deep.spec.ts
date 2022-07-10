@@ -12,7 +12,7 @@ describe('deep test with real child component', ()=>{
     let fixture: ComponentFixture<HeroesComponent>;
 
     beforeEach(()=>{
-        mockHeroService = jasmine.createSpyObj(['addHero', 'getHeroes', 'deleteHero']);
+        mockHeroService = jasmine.createSpyObj('HeroService',['addHero', 'getHeroes', 'deleteHero','deleteMyHero']);
         TestBed.configureTestingModule({
             declarations:[ HeroesComponent, HeroComponent ],
             providers: [
@@ -49,7 +49,7 @@ describe('deep test with real child component', ()=>{
     });
 
     it(`should call heroService.deleteHero, when the HeroComponent's delete butten is clicked`, () => {
-        spyOn(fixture.componentInstance, 'deleteHero'); //watch on the mocked HeroesComponent on deleteHero method
+        spyOn(fixture.componentInstance, 'deleteHero'); //spy on deleteHero() method, watch on the mocked HeroesComponent on deleteHero method
         mockHeroService.getHeroes.and.returnValue(of(HEROES));
         // run ngOnInit
         fixture.detectChanges();
@@ -63,7 +63,47 @@ describe('deep test with real child component', ()=>{
 
         heroComponents[0].triggerEventHandler('delete', null); // same trggering delete event on HeroCompont, but this is from parent debugElement
         expect(fixture.componentInstance.deleteHero).toHaveBeenCalledWith(HEROES[0]); //HEROES[0] is as parameter when delete is called
-    })
+    });
+
+    it(`should add a new hero to the hero list when the add button is clicked`, () => {
+        mockHeroService.getHeroes.and.returnValue(of(HEROES));
+        // get all heroes
+        fixture.detectChanges();
+        
+        const newHeroName = "Mr. Ice";
+        const lastHero = { id:4, name: newHeroName, strength: 4};
+        mockHeroService.addHero.and.returnValue(of(lastHero));
+        const inputElement = fixture.debugElement.query(By.css('input'));
+        const addButton = fixture.debugElement.queryAll(By.css('button'))[0];
+        inputElement.nativeElement.value = newHeroName;
+        addButton.triggerEventHandler('click', null);
+        fixture.detectChanges(); //call onInit to refresh 
+
+        const lastHeroComponents = fixture.debugElement.queryAll(By.css('li'));
+        expect(lastHeroComponents.length).toEqual(4);
+        expect(lastHeroComponents[3].nativeElement.innerText).toContain(newHeroName);
+    });
+
+    it(`should call add  when add a new hero to the hero list`, () => {
+    
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+     // get all heroes
+    fixture.detectChanges();
+    spyOn(fixture.componentInstance, 'add'); // watch on mocked HeroesComponent on add method
+    
+    const newHeroName = "Mr. Ice";
+    const lastHero = { id:4, name: newHeroName, strength: 4};
+    mockHeroService.addHero.and.returnValue(of(lastHero));
+    const inputElement = fixture.debugElement.query(By.css('input'));
+    const addButton = fixture.debugElement.queryAll(By.css('button'))[0];
+    inputElement.nativeElement.value = newHeroName;
+    addButton.triggerEventHandler('click', null);
+    
+    fixture.detectChanges(); //call onInit to refresh 
+    const lastHeroComponents = fixture.debugElement.queryAll(By.css('li'));
+    expect(lastHeroComponents.length).toEqual(3);
+    expect(fixture.componentInstance.add).toHaveBeenCalledWith(newHeroName);
+});
 
     it('shoudl add a new hero to the hero list when the add button is clicked', () => {
         mockHeroService.getHeroes.and.returnValue(of(HEROES));
@@ -90,5 +130,5 @@ describe('deep test with real child component', ()=>{
         // alternative 3 
         const heroElements = fixture.debugElement.queryAll(By.directive(HeroComponent));
         expect(heroElements[3].nativeElement.innerText).toContain(newHeroName);
-    })
+    });
 })

@@ -16,14 +16,14 @@ describe('heroes component', ()=>{
       {id: 3, name:'name3', strength:3}
     ];
 
-    mockHeroSevice = jasmine.createSpyObj(['getHeroes', 'addHero', 'deleteHero']);
+    mockHeroSevice = jasmine.createSpyObj(['getHeroes', 'addHero', 'deleteHero','deleteMyHero']);
 
     heroesComponent = new HeroesComponent(mockHeroSevice);
   });
 
   describe('delete', () => {
     it('should remove the indicated hero from the heroes list', () => {
-        mockHeroSevice.deleteHero.and.returnValue(of(true));
+        mockHeroSevice.deleteMyHero.and.returnValue(of(true));
         heroesComponent.heroes = HERORES;
         heroesComponent.deleteHero(HERORES[1]);
         expect(heroesComponent.heroes.length).toEqual(2);
@@ -33,11 +33,11 @@ describe('heroes component', ()=>{
     });
 
     it('should call deleteHero by HERORES[1]', () => {
-        mockHeroSevice.deleteHero.and.returnValue(of(true));
+        mockHeroSevice.deleteMyHero.and.returnValue(of(true));
         heroesComponent.heroes = HERORES;
         heroesComponent.deleteHero(HERORES[1]);
-        expect(mockHeroSevice.deleteHero).toHaveBeenCalled();
-        expect(mockHeroSevice.deleteHero).toHaveBeenCalledWith(HERORES[1]);
+        expect(mockHeroSevice.deleteMyHero).toHaveBeenCalled();
+        expect(mockHeroSevice.deleteMyHero).toHaveBeenCalledWith(HERORES[1]);
     })
   });
 
