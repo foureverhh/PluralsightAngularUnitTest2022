@@ -6,6 +6,21 @@ import { toBase64String } from '@angular/compiler/src/output/source_map';
 import { of } from 'rxjs';
 import { Hero } from '../hero';
 import { By } from '@angular/platform-browser';
+import { Directive, Input } from '@angular/core';
+
+@Directive({
+    selector: '[routerLink]',
+    host: { '(click)': 'onClick()'}
+})
+export class RouterLinkDirectiveStub {
+    @Input('routerLink') linkParams: any;
+    navigateTo: any = null;
+
+    onClick() {
+        this.navigateTo = this.linkParams;
+    }
+}
+
 describe('deep test with real child component', ()=>{
     let mockHeroService: any;
     let HEROES: Hero[];
@@ -14,9 +29,9 @@ describe('deep test with real child component', ()=>{
     beforeEach(()=>{
         mockHeroService = jasmine.createSpyObj('HeroService',['addHero', 'getHeroes', 'deleteHero','deleteMyHero']);
         TestBed.configureTestingModule({
-            declarations:[ HeroesComponent, HeroComponent ],
+            declarations:[ HeroesComponent, HeroComponent, RouterLinkDirectiveStub ],
             providers: [
-                { provide:HeroService, useValue:mockHeroService}
+                { provide:HeroService, useValue:mockHeroService }
             ]
         });
         fixture = TestBed.createComponent(HeroesComponent);
@@ -25,8 +40,6 @@ describe('deep test with real child component', ()=>{
             {id: 2, name:'name2', strength:2},
             {id: 3, name:'name3', strength:3}
         ];
-        
-        
     });
 
     it('should be true', () => {
@@ -130,5 +143,16 @@ describe('deep test with real child component', ()=>{
         // alternative 3 
         const heroElements = fixture.debugElement.queryAll(By.directive(HeroComponent));
         expect(heroElements[3].nativeElement.innerText).toContain(newHeroName);
+    });
+
+    it('should have correct route for the first hero', () => {
+        mockHeroService.getHeroes.and.returnValue(of(HEROES));
+        fixture.detectChanges();
+        const heroComponents = fixture.debugElement.queryAll(By.directive(HeroComponent));
+        let routerLink = heroComponents[0]
+                        .query(By.directive(RouterLinkDirectiveStub)) //search for the DebugElement which has an RouterLinkDirectiveStub on it, here that is <a> debugElement
+                        .injector.get(RouterLinkDirectiveStub); // get the RouterLinkDirectiveStub directive inside the anchor tag
+        heroComponents[0].query(By.css('a')).triggerEventHandler('click', null);
+        expect(routerLink.navigateTo).toEqual('/detail/1');
     });
 })
