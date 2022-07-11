@@ -1,5 +1,5 @@
 import { HeroDetailComponent } from './hero-detail.component';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, ComponentFixture, fakeAsync, tick, flush } from '@angular/core/testing';
 import { HeroService } from '../hero.service';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -54,13 +54,23 @@ describe('HeroDetailComponent', () => {
 
   });
 
-  it('should call updateHero when save is called', (done) => {
+  it('should call updateHero when save is called with setTimeout', (done) => {
     mockHeroService.updateHero.and.returnValue(of({}));
     fixture.detectChanges();
     fixture.componentInstance.save();
     setTimeout(()=> {
       expect(mockHeroService.updateHero).toHaveBeenCalled();
-      done();
+      done(); // done must be called here, otherwise expect(mockLocation.back).toHaveBeenCalled() would by skipped
     }, 300);
   });
+
+  //fakeAsync Helper turn async to sync unit test by run in a special time zone object, to fast forward time
+  it('should call updateHero when save is called with fakeAysync Helper function', fakeAsync(() => {
+    mockHeroService.updateHero.and.returnValue(of({}));
+    fixture.detectChanges();
+    fixture.componentInstance.save();
+    //tick(250); //tick back specfic 250 miliseconds with the help of zone.js,  runs in a speical time zone object
+    flush(); //check whether there is any task is awaiting, if so fast forward the clock to those tasks are executed
+    expect(mockHeroService.updateHero).toHaveBeenCalled();
+  }));
 })
