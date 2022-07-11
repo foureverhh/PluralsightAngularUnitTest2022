@@ -95,5 +95,8 @@ describe('HeroDetailComponent', () => {
     expect(mockHeroService.updateHero).toHaveBeenCalled();
   }));
 
-
+  it("how to get unit test coverage", () => {
+    console.log("use ng test --no-watch --code-coverage to check source coverage");
+    console.log("find \coverage\angular_pluralsight_unit_test index.html to find the report");
+  });
 })
