@@ -1,5 +1,5 @@
 import { HeroDetailComponent } from './hero-detail.component';
-import { TestBed, ComponentFixture, fakeAsync, tick, flush } from '@angular/core/testing';
+import { TestBed, ComponentFixture, fakeAsync, tick, flush, waitForAsync } from '@angular/core/testing';
 import { HeroService } from '../hero.service';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -73,4 +73,27 @@ describe('HeroDetailComponent', () => {
     flush(); //check whether there is any task is awaiting, if so fast forward the clock to those tasks are executed
     expect(mockHeroService.updateHero).toHaveBeenCalled();
   }));
+
+  // waitForAsync and fixture.whenStable() to test promise
+  it('should call updateHero when saveInPromise is called with waiForAsync Helper function', waitForAsync(() => {
+    mockHeroService.updateHero.and.returnValue(of({}));
+    fixture.detectChanges();
+    fixture.componentInstance.saveInPromise();
+    fixture.whenStable() //whenStable() means wait for thoes promise to be resolved
+           .then(() => {
+                expect(mockHeroService.updateHero).toHaveBeenCalled();
+    })
+  }));
+
+   //fakeAsync Helper turn async to sync unit test by run in a special time zone object, to fix prommise
+   it('should call updateHero when save is called with waitForAsync Helper function', fakeAsync(() => {
+    mockHeroService.updateHero.and.returnValue(of({}));
+    fixture.detectChanges();
+    fixture.componentInstance.saveInPromise();
+    //tick(250); //tick back specfic 250 miliseconds with the help of zone.js,  runs in a speical time zone object
+    flush(); //check whether there is any task is awaiting, if so fast forward the clock to those tasks are executed
+    expect(mockHeroService.updateHero).toHaveBeenCalled();
+  }));
+
+
 })

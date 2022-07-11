@@ -41,6 +41,14 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(() => this.goBack());
     },250, false)()
   }
+
+  saveInPromise(): void {
+    someThirdPartyPromise().then(()=> {
+      this.heroService.updateHero(this.hero)
+      .subscribe(() => this.goBack());
+    })
+  }
+
 }
 
 function debounce(ctext:any,func:any, wait:any, imdediate:any) {
@@ -56,5 +64,10 @@ function debounce(ctext:any,func:any, wait:any, imdediate:any) {
     timeout = setTimeout(later, wait);
     if(callNow) func.apply(context, args);
   }
-
 };
+
+function someThirdPartyPromise() {
+  return new Promise((resovle) => {
+    resovle(null);
+  })
+}
