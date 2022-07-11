@@ -36,7 +36,25 @@ export class HeroDetailComponent implements OnInit {
   }
 
   save(): void {
-    this.heroService.updateHero(this.hero)
+    debounce(this,()=>{
+      this.heroService.updateHero(this.hero)
       .subscribe(() => this.goBack());
+    },250, false)()
   }
 }
+
+function debounce(ctext:any,func:any, wait:any, imdediate:any) {
+  var timeout:any;
+  return () => {
+    var context = ctext, args = arguments;
+    var later = function() {
+      timeout = null;
+      if(!imdediate) func.apply(context, args);
+    };
+    var callNow = imdediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if(callNow) func.apply(context, args);
+  }
+
+};
